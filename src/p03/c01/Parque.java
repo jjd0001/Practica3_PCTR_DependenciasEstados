@@ -126,7 +126,7 @@ public class Parque implements IParque{
 	}
 
 	protected synchronized void comprobarAntesDeEntrar(String p){	// String p lo pongo yo					
-		while(contadorPersonasTotales == 40){
+		while(contadorPersonasTotales == 40){ //Deberia de comprobar que la puerta no este llena (20)
 	           try {
 				wait();
 			} catch (InterruptedException e) {}
@@ -134,7 +134,7 @@ public class Parque implements IParque{
 	}
 
 	protected synchronized void comprobarAntesDeSalir(String p){		// String p lo pongo yo
-		while ( contadorPersonasTotales == 0 )
+		while ( contadorPersonasTotales == 0 ) //Deberia de comprobar que la puerta no esta vacia	
 			try { wait(); }
 			catch(InterruptedException e) {}
 	}
