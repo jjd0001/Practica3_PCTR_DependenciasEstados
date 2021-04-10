@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import t02.pg02.c01.IParque;
+
 
 public class Parque implements IParque{
 
@@ -50,6 +52,8 @@ public class Parque implements IParque{
 			// Aumentamos el contador total y el individual
 			contadorPersonasTotales++;		
 			contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)+1);
+		
+			
 			
 			// Imprimimos el estado del parque
 			imprimirInfo(puerta, "Entrada");
@@ -60,6 +64,10 @@ public class Parque implements IParque{
 		}
 		
 		public synchronized void salirDelParque(String puerta){
+			// Si no hay salidas por esa puerta, inicializamos
+			if (contadoresPersonasPuerta.get(puerta) == null){ 
+				contadoresPersonasPuerta.put(puerta, 0);
+			}
 			
 			//Comprobamos si no sobrepasa el limite
 			comprobarAntesDeSalir(puerta);
@@ -71,10 +79,10 @@ public class Parque implements IParque{
 			contadorPersonasTotales--;		
 			contadoresPersonasPuerta.put(puerta, contadoresPersonasPuerta.get(puerta)-1);
 			
-			// Si la puerta se queda a 0, se elimina
-			if (contadoresPersonasPuerta.get(puerta) == 0){
+			// Si la puerta se queda a 0, se elimina ¿por qué?
+			/*if (contadoresPersonasPuerta.get(puerta) == 0){
 				contadoresPersonasPuerta.remove(puerta);
-			}
+			}*/
 			
 			// Imprimimos el estado del parque
 			imprimirInfo(puerta, "Salida");
@@ -108,27 +116,43 @@ public class Parque implements IParque{
 		protected void checkInvariante() {
 			
 			assert sumarContadoresPuerta() == contadorPersonasTotales : "INV: La suma de contadores de las puertas debe ser igual al valor del contador del parque";
-			// TODO 
-			// TODO
+			assert contadorPersonasTotales >= 0 : "INV: El parque no puede tener menos de 0 personas";
+
 		}
 
 		protected void comprobarAntesDeEntrar(String p){	// String p lo pongo yo					
-				
+			/*try{				
+				assert contadoresPersonasPuerta.get(p) <= 20;				
+			}catch(AssertionError e){
+				System.out.println("Puerta " + p + " completa");
+			}	*/	
 			System.out.println("Intento entrar por puerta " + p);
-			assert contadoresPersonasPuerta.get(p) < 20 : "Puerta completa";
+			assert contadorPersonasTotales <= 40 : "Parque completo";
 		}
 
 		protected void comprobarAntesDeSalir(String p){		// String p lo pongo yo
 			
+				//Comprueba que existe la puerta y que su contador sea mayor que 0
+				//assert contadoresPersonasPuerta.get(p) != null && contadoresPersonasPuerta.get(p) > 0 : "Salida cancelada";			
+			/*
+				System.out.println("Salida cancelada");
+				System.out.println("Puerta " + p + " vacia");
+				System.out.println(" ");
+			}*/
 			System.out.println("Intento salir por puerta " + p);
-			//assert contadorPersonasTotales > 0 : "Parque vacio";
+			assert contadorPersonasTotales > 0 : "Parque vacio";
 			assert contadoresPersonasPuerta.containsKey(p): "Puerta inexistente";
-			assert contadoresPersonasPuerta.get(p) > 0 : "Puerta vacia";
+			assert contadorPersonasTotales > 0 : "Puerta vacia";
 		}
 		
 		private double obtenerTmedio() {
 			tMedio = (tMedio + (tEntrada - tSalida))/2.0; 
 			return tMedio; 
 		}
+	
+	
+	
+
+
 
 }
